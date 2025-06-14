@@ -131,22 +131,6 @@ const { sortOldestFirst, sortedLaunches } = useLaunchSort(filtered)
 
 const favoritesStore = useFavoritesStore()
 
-// Check if a rocket is favorited
-const isFavorite = (rocketId) => {
-  return favoritesStore.favoriteRockets.some(rocket => rocket.id === rocketId)
-}
-
-// Toggle favorite status
-const toggleFavorite = (rocket) => {
-  if (isFavorite(rocket.rocket.id)) {
-    favoritesStore.removeFavorite(rocket.rocket.id)
-  } else {
-    favoritesStore.addFavorite({
-      id: rocket.rocket.id,
-      name: rocket.rocket_name
-    })
-  }
-}
 
 </script>
 <style scoped>
