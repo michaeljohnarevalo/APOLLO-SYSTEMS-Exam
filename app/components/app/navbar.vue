@@ -1,8 +1,6 @@
-
 <template>
   <v-app-bar class="navbar" elevation="8" height="80">
     <div class="navbar-content">
-      <!-- Logo Section -->
       <div class="logo-section">
         <v-toolbar-title class="app-title">
           <span class="rocket-icon">🚀</span>
@@ -21,6 +19,12 @@
           <v-icon class="nav-icon">mdi-star</v-icon>
           <span class="nav-text">Favorites</span>
         </NuxtLink>
+
+        <v-btn icon @click="toggleTheme">
+          <v-icon :color="theme.global.name.value === 'dark' ? 'blue' : 'white'">
+            {{ theme.global.name.value === 'light' ? 'mdi-weather-night' : 'mdi-weather-night' }}
+          </v-icon>
+        </v-btn>
       </div>
 
       <v-btn
@@ -34,12 +38,19 @@
     </div>
   </v-app-bar>
 </template>
+<script setup lang="ts">
+import { useTheme } from 'vuetify'
 
+const theme = useTheme()
+
+const toggleTheme = () => {
+  theme.global.name.value = theme.global.name.value === 'light' ? 'dark' : 'light'
+}
+</script>
 <style scoped>
 .navbar {
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%) !important;
-  border-bottom: 2px solid #005288 !important;
-  backdrop-filter: blur(10px);
+  background-color: #0d0d0d !important;
+  border-bottom: 2px solid #005288;
 }
 
 .navbar-content {
@@ -47,9 +58,10 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0 2rem;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 0 2rem;
+  flex-wrap: wrap;
 }
 
 .logo-section {
@@ -60,11 +72,10 @@
 .app-title {
   display: flex;
   align-items: center;
-  font-size: 1.8rem !important;
-  font-weight: 700 !important;
-  color: #ffffff !important;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
   text-decoration: none;
-  transition: all 0.3s ease;
 }
 
 .rocket-icon {
@@ -74,10 +85,7 @@
 }
 
 .brand-name {
-  background: linear-gradient(45deg, #ffffff 0%, #0073e6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -105,49 +113,24 @@
   font-weight: 500;
   font-size: 1rem;
   border-radius: 8px;
-  transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
-  position: relative;
-  overflow: hidden;
-}
-
-.nav-link::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0, 115, 230, 0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.nav-link:hover::before {
-  left: 100%;
+  transition: all 0.3s ease;
 }
 
 .nav-link:hover {
   color: #ffffff;
-  background: rgba(0, 115, 230, 0.1);
-  border: 1px solid rgba(0, 115, 230, 0.3);
+  background-color: rgba(0, 115, 230, 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 115, 230, 0.2);
 }
 
 .nav-link-active {
-  color: #ffffff !important;
-  background: linear-gradient(45deg, #005288 0%, #0073e6 100%) !important;
-  box-shadow: 0 4px 15px rgba(0, 115, 230, 0.3);
-}
-
-.nav-link-active .nav-icon {
-  color: #ffffff !important;
+  color: #ffffff;
+  background-color: #0073e6;
 }
 
 .nav-icon {
-  font-size: 1.2rem !important;
-  transition: all 0.3s ease;
+  font-size: 1.2rem;
 }
 
 .nav-text {
@@ -156,8 +139,7 @@
 }
 
 .mobile-menu-btn {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
-
 </style>
