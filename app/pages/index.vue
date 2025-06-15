@@ -21,6 +21,7 @@
           class="year-filter"
           clearable
           color="primary"
+          
         />
         <v-btn
           class="mb-4 sort-button"
@@ -34,11 +35,10 @@
       </div> 
       <div class=" launches-grid" style="gap: 14px;" > 
           <v-card 
-            v-for="launch in sortedLaunches" 
+            v-for="launch in paginatedLaunches" 
             :key="launch.id"
             class=" launch-card"
-            hover
-> 
+            hover> 
             <div> 
               <v-card-title class="text-h5 font-weight-bold primary--text px-4 pt-4 card-header">
                 {{ launch.mission_name }}
@@ -86,6 +86,7 @@
             text 
             class="text-caption pl-0 action-button"
               >
+              <v-icon small left>mdi-rocket-launch</v-icon>
                 View Rocket
               </v-btn>
           <v-btn
@@ -101,6 +102,14 @@
             </v-card-actions>
           </v-card>
       </div>
+      <div class="d-flex justify-center mt-6">
+  <v-pagination
+    v-model="currentPage"
+    :length="totalPages"
+    total-visible="5"
+    color="primary"
+  />
+</div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -131,9 +140,43 @@ const { sortOldestFirst, sortedLaunches } = useLaunchSort(filtered)
 
 const favoritesStore = useFavoritesStore()
 
+const isFavorite = (rocketId) => {
+  return favoritesStore.favoriteRockets.some(rocket => rocket.id === rocketId)
+}
 
+const toggleFavorite = (rocket) => {
+  if (isFavorite(rocket.rocket.id)) {
+    favoritesStore.removeFavorite(rocket.rocket.id)
+  } else {
+    favoritesStore.addFavorite({
+      id: rocket.rocket.id,
+      name: rocket.rocket_name
+    })
+  }
+}
+
+
+
+const currentPage = ref(1)
+const itemsPerPage = 6
+
+const paginatedLaunches = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return sortedLaunches.value.slice(start, end)
+})
+
+const totalPages = computed(() => {
+  return Math.ceil(sortedLaunches.value.length / itemsPerPage)
+})
 </script>
 <style scoped>
+.v-pagination {
+  margin-top: 25px;
+  margin-bottom: -150px;
+}
+
+
 .launches-content {
   max-width: 1400px;
   margin: 0 auto;
@@ -191,9 +234,9 @@ const favoritesStore = useFavoritesStore()
 }
 
 .launch-card {
-  background: rgba(0, 0, 0, 0.8) !important;
+  background: rgba(40, 40, 45, 0.95) !important; /* Lighter card background */
   backdrop-filter: blur(10px);
- /*border: 1px solid rgba(255, 255, 255, 0.1) !important;*/
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 16px !important;
   transition: all 0.3s ease !important;
   display: flex;
@@ -201,14 +244,16 @@ const favoritesStore = useFavoritesStore()
   min-height: 250px;
 }
 
+
 .card-header {
   background: linear-gradient(45deg, #005288 0%, #0073e6 100%);
   padding: 1.5rem;
   border-radius: 16px 16px 0 0;
+  color:#b0b0b0
 }
 
 .mission-title {
-  color: #ffffff !important;
+  color: #b0b0b0 !important;
   font-size: 1.4rem !important;
   font-weight: 700 !important;
   margin-bottom: 0.5rem !important;
@@ -217,7 +262,7 @@ const favoritesStore = useFavoritesStore()
 }
 
 .launch-date {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: rgb(255, 255, 255) !important;
   display: flex;
   align-items: center;
   font-size: 0.9rem !important;
@@ -240,10 +285,12 @@ const favoritesStore = useFavoritesStore()
   align-items: flex-start;
   margin-bottom: 1.25rem;
   padding: 0.75rem;
-  background: rgba(0, 0, 0, 0.8) !important;
+  background: rgba(28, 28, 32, 0.9) !important; /* Darker info sections for contrast */
   border-radius: 8px;
   border-left: 3px solid #005288;
+  transition: background 0.2s ease;
 }
+
 
 .info-icon {
   color: #0073e6 !important;
@@ -275,9 +322,10 @@ const favoritesStore = useFavoritesStore()
   align-items: flex-start;
   margin-top: 1rem;
   padding: 1rem;
-  background: rgba(0, 0, 0, 0.8) !important;
+  background: rgba(28, 28, 32, 0.9) !important; /* Match info-item background */
   border-radius: 8px;
   border-left: 3px solid #005288;
+  transition: background 0.2s ease;
 }
 
 .details-text {
